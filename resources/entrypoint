@@ -1,0 +1,41 @@
+#!/bin/bash
+
+printf "\n\033[0;44m---> Init the environment.\033[0m\n"
+
+mkdir -p /home/muss/muss/resources/models
+cd /home/muss/muss/resources/models
+if [[ ! -d muss_fr_mined ]]; then
+    printf "\n\033[0;44m---> Downloading muss_fr_mined...\033[0m\n"
+    wget https://dl.fbaipublicfiles.com/muss/muss_fr_mined.tar.gz
+    tar zxf muss_fr_mined.tar.gz
+    rm muss_fr_mined.tar.gz
+fi
+
+mkdir -p fasttext-vectors
+cd fasttext-vectors
+if [[ ! -f cc.fr.300.vec ]]; then
+    printf "\n\033[0;44m---> Downloading cc.fr.300.vec...\033[0m\n"
+    wget https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.fr.300.vec.gz
+    gzip -d cc.fr.300.vec.gz
+fi
+
+mkdir -p /home/muss/.local/lib/python3.7/site-packages
+cd /home/muss/.local/lib/python3.7/site-packages
+if [[ ! -d fr_core_news_md ]]; then
+    printf "\n\033[0;44m---> Downloading fr_core_news_md...\033[0m\n"
+    wget https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-2.3.0/fr_core_news_md-2.3.0.tar.gz
+    tar zxf fr_core_news_md-2.3.0.tar.gz --strip 1 fr_core_news_md-2.3.0/fr_core_news_md fr_core_news_md-2.3.0/fr_core_news_md.egg-info
+    rm fr_core_news_md-2.3.0.tar.gz
+fi
+
+cd /home/muss
+
+eval "$(conda shell.bash hook)"
+conda activate muss
+
+cd /home/muss/muss
+# Fixing installation error of git dependencies
+pip install -r requirements.txt
+pip install -e .
+
+exec "$@"
