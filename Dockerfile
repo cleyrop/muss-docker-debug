@@ -10,7 +10,7 @@ RUN apt-get update -qq \
 
 ENV PATH /opt/conda/bin:$PATH
 
-RUN conda create -n muss python=3.7 cudatoolkit cudnn -y \
+RUN conda create -n muss python=3.7 cudatoolkit cudnn gunicorn -y \
     \
     && useradd --home /home/muss --create-home --shell /bin/bash --uid 2001 muss \
     && chown -R muss:muss /home/muss
@@ -31,7 +31,13 @@ RUN git clone --quiet --depth 1 https://github.com/facebookresearch/muss.git -b 
     && echo '  . ~/.bashrc' >> ~/.bash_profile \
     && echo 'fi' >> ~/.bash_profile
 
+ENV FLASK_APP=muss
+ENV FLASK_ENV=production
+
 COPY resources/entrypoint /entrypoint
+COPY --chown=muss resources/api.py /home/muss/muss/scripts/
+COPY --chown=muss resources/simplify.py /home/muss/muss/scripts/
+COPY --chown=muss resources/gunicorn.conf.py /usr/local/etc/
 
 ENTRYPOINT ["/entrypoint"]
-CMD tail -f /dev/null
+CMD ["tail", "-f", "/dev/null"]

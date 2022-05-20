@@ -1,0 +1,9 @@
+bind = ["127.0.0.1:8000"]
+accesslog = "/home/muss/access.log"
+errorlog = "/home/muss/error.log"
+workers = 1
+threads = 1
+daemon = True
+chdir = "/home/muss/muss/scripts"
+reload = True
+timeout = 120
