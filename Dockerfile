@@ -21,6 +21,7 @@ WORKDIR /home/muss
 RUN git clone --quiet --depth 1 https://github.com/facebookresearch/muss.git -b main \
     && cd muss \
     && sed -i 's/git+git/git+https/g' requirements.txt \
+    && sed -i 's#^fairseq.*#fairseq@ git+https://github.com/cleyrop/fairseq.git@v0.10.2.0#' requirements.txt \
     && rm -rf .git* \
     && cd .. \
     && conda init bash \
