@@ -18,7 +18,7 @@ RUN conda create -n muss python=3.7 cudatoolkit cudnn gunicorn -y \
 USER muss
 WORKDIR /home/muss
 
-RUN git clone --quiet --depth 1 https://github.com/facebookresearch/muss.git -b main \
+RUN git clone --quiet --depth 1 https://github.com/cleyrop/muss.git -b unapei-ia \
     && cd muss \
     && sed -i 's/git+git/git+https/g' requirements.txt \
     && sed -i 's#^fairseq.*#fairseq@ git+https://github.com/cleyrop/fairseq.git@v0.10.2.0#' requirements.txt \
@@ -36,8 +36,9 @@ ENV FLASK_APP=muss
 ENV FLASK_ENV=production
 
 COPY resources/entrypoint /entrypoint
-COPY --chown=muss resources/api.py /home/muss/muss/scripts/
-COPY --chown=muss resources/simplify.py /home/muss/muss/scripts/
+COPY --chown=muss resources/scripts/api.py /home/muss/muss/scripts/
+COPY --chown=muss resources/scripts/simplify.py /home/muss/muss/scripts/
+COPY --chown=muss resources/muss/simplify.py /home/muss/muss/muss/
 COPY --chown=muss resources/gunicorn.conf.py /usr/local/etc/
 
 ENTRYPOINT ["/entrypoint"]

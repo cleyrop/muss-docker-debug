@@ -1,11 +1,12 @@
 from ast import arg
+from plistlib import load
 from flask import Flask, request, jsonify, g as app_ctx
 
 import logging
 import time
 from markupsafe import escape
 
-from muss.simplify import simplify_sentences
+from muss.simplify import init_simplifier, simplify_sentences
 from muss.utils.helpers import read_lines
 
 app = Flask(__name__)
@@ -43,6 +44,10 @@ if __name__ != '__main__':
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
 
-    app.logger.info(f'simplifying a sentence to load the model...')
+    app.logger.info('Loading the model...')
+    init_simplifier('muss_fr_mined')
+    app.logger.info('Model loaded.')
+
+    app.logger.info('Simplifying a sentence...')
     simplify_sentences('Il fait un temps radieux.', model_name='muss_fr_mined')
-    app.logger.info(f'model is loaded')
+    app.logger.info('Sentence simplified.')
