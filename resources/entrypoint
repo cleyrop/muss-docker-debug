@@ -38,4 +38,16 @@ cd /home/muss/muss
 pip install -r requirements.txt
 pip install -e .
 
+
+printf "\n\033[0;44m---> Starting the gunicorn server.\033[0m\n"
+
+gunicorn --config /usr/local/etc/gunicorn.conf.py api:app
+
+printf "\n\033[0;44m---> First use of the API to preload the model ...\033[0m\n"
+
+cd scripts
+time python simplify.py examples.fr --model-name muss_fr_mined
+
+printf "\n\033[0;44m---> Server is ready.\033[0m\n"
+
 exec "$@"
